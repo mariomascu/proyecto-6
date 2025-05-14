@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Articulo; // Asegúrate de tener el modelo Articulo
+use App\Models\Articulo;
 use Illuminate\Http\Request;
 
 class ArticuloController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
         // Devuelve todos los artículos
@@ -17,29 +15,27 @@ class ArticuloController extends Controller
         return response()->json($articulos);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
         // Validación básica de datos
         $request->validate([
             'titulo' => 'required|string|max:255',
             'contenido' => 'required|string',
+            'autor' => 'required|string|max:255',
         ]);
 
         // Crear un nuevo artículo
         $articulo = Articulo::create([
             'titulo' => $request->titulo,
             'contenido' => $request->contenido,
+            'autor' => $request->autor,
         ]);
 
-        return response()->json($articulo, 201); // Respuesta de creación exitosa
+        return response()->json($articulo, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(string $id)
     {
         // Mostrar un artículo específico por ID
@@ -52,9 +48,7 @@ class ArticuloController extends Controller
         return response()->json($articulo);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    
     public function update(Request $request, string $id)
     {
         // Validación básica de datos
@@ -79,9 +73,7 @@ class ArticuloController extends Controller
         return response()->json($articulo);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
         // Buscar el artículo
