@@ -7,21 +7,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Articulo extends Model
 {
-    
     protected $fillable = [
-        'id',
         'titulo',
         'contenido',
         'fecha_publicacion',
         'autor'
     ];
 
-    
     protected $casts = [
         'fecha_publicacion' => 'datetime',
     ];
 
-    
     public function comentarios(): HasMany
     {
         return $this->hasMany(Comentario::class);

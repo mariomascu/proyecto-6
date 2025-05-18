@@ -7,21 +7,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comentario extends Model
 {
-    
     protected $fillable = [
-        'id',
         'contenido',
         'fecha_publicacion',
         'autor',
         'articulo_id'
     ];
 
-    
     protected $casts = [
         'fecha_publicacion' => 'datetime',
     ];
 
-    
     public function articulo(): BelongsTo
     {
         return $this->belongsTo(Articulo::class);

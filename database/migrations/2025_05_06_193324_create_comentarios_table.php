@@ -6,24 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('comentarios', function (Blueprint $table) {
             $table->id();
-            $table->string('contenido');
-            $table->timestamps();
+            $table->text('contenido');
             $table->string('autor');
-            $table->string('articulo_id');
+            $table->timestamp('fecha_publicacion')->useCurrent();
+            $table->foreignId('articulo_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('comentarios');
     }

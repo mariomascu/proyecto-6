@@ -4,88 +4,45 @@ namespace App\Http\Controllers;
 
 use App\Models\Articulo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ArticuloController extends Controller
 {
-    
     public function index()
     {
-        // Devuelve todos los artículos
-        $articulos = Articulo::all();
-        return response()->json($articulos);
+        return response()->json(Articulo::all());
     }
 
-    
     public function store(Request $request)
     {
-        // Validación básica de datos
-        $request->validate([
-            'titulo' => 'required|string|max:255',
-            'contenido' => 'required|string',
-            'autor' => 'required|string|max:255',
-        ]);
-
-        // Crear un nuevo artículo
-        $articulo = Articulo::create([
-            'titulo' => $request->titulo,
-            'contenido' => $request->contenido,
-            'autor' => $request->autor,
-        ]);
-
+        $articulo = Articulo::create($request->all());
         return response()->json($articulo, 201);
     }
 
-    
-    public function show(string $id)
+    public function show($id)
     {
-        // Mostrar un artículo específico por ID
-        $articulo = Articulo::find($id);
-
-        if (!$articulo) {
-            return response()->json(['message' => 'Artículo no encontrado'], 404);
-        }
-
-        return response()->json($articulo);
+        return response()->json(Articulo::where('id', (int)$id)->first());
     }
 
-    
-    public function update(Request $request, string $id)
-    {
-        // Validación básica de datos
-        $request->validate([
-            'titulo' => 'required|string|max:255',
-            'contenido' => 'required|string',
-        ]);
-
-        // Buscar el artículo
+    public function update(Request $request, $id)
+    {        
         $articulo = Articulo::find($id);
-
-        if (!$articulo) {
-            return response()->json(['message' => 'Artículo no encontrado'], 404);
+        if ($articulo) {
+            $articulo->update($request->all());
+            return response()->json(['message' => 'Articulo modificado']);
+        } else {
+            return response()->json(['error' => 'Articulo no modificado'], 404);
         }
-
-        // Actualizar artículo
-        $articulo->update([
-            'titulo' => $request->titulo,
-            'contenido' => $request->contenido,
-        ]);
-
-        return response()->json($articulo);
     }
 
-
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        // Buscar el artículo
         $articulo = Articulo::find($id);
-
-        if (!$articulo) {
-            return response()->json(['message' => 'Artículo no encontrado'], 404);
+        if ($articulo) {
+            $articulo->delete();
+            return response()->json(['message' => 'Articulo eliminado']);
+        } else {
+            return response()->json(['error' => 'Articulo no encontrado'], 404);
         }
-
-        // Eliminar artículo
-        $articulo->delete();
-
-        return response()->json(['message' => 'Artículo eliminado exitosamente']);
     }
 }

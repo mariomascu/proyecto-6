@@ -10,91 +10,50 @@ class ComentarioController extends Controller
 {
     public function index()
     {
-        // Devuelve todos los comentarios
-        $comentarios = Comentario::all();
-        return response()->json($comentarios);
+        return response()->json(Comentario::all());
     }
 
-    
     public function store(Request $request)
     {
-        // Validación básica de datos
-        $request->validate([
-            'articulo_id' => 'required|exists:articulos,id',
-            'contenido' => 'required|string',
-        ]);
-
-        // Crear un nuevo comentario
-        $comentario = Comentario::create([
-            'articulo_id' => $request->articulo_id,
-            'contenido' => $request->contenido,
-        ]);
-
-        return response()->json($comentario, 201); // Respuesta de creación exitosa
+        $comentario = Comentario::create($request->all());
+        return response()->json($comentario, 201);
     }
 
-    
-    public function show(string $id)
+    public function show($id)
     {
-        // Mostrar un comentario específico por ID
-        $comentario = Comentario::find($id);
-
-        if (!$comentario) {
-            return response()->json(['message' => 'Comentario no encontrado'], 404);
-        }
-
-        return response()->json($comentario);
+        return response()->json(Comentario::where('id', (int)$id)->first());
     }
 
-    
-    public function articleComments(string $articleId)
+    public function comentariosArticulo($id)
     {
-        // Obtener todos los comentarios de un artículo específico
-        $articulo = Articulo::find($articleId);
+        $articulo = Articulo::with('comentarios')->find($id);
 
         if (!$articulo) {
-            return response()->json(['message' => 'Artículo no encontrado'], 404);
+            return response()->json(['error' => 'Artículo no encontrado'], 404);
         }
 
-        $comentarios = $articulo->comentarios;
-        return response()->json($comentarios);
+        return response()->json($articulo->comentarios);
     }
 
-    
-    public function update(Request $request, string $id)
-    {
-        // Validación básica de datos
-        $request->validate([
-            'contenido' => 'required|string',
-        ]);
-
-        // Buscar el comentario
+    public function update(Request $request, $id)
+    {        
         $comentario = Comentario::find($id);
-
-        if (!$comentario) {
-            return response()->json(['message' => 'Comentario no encontrado'], 404);
+        if ($comentario) {
+            $comentario->update($request->all());
+            return response()->json(['message' => 'Comentario modificado']);
+        } else {
+            return response()->json(['error' => 'Comentario no modificado'], 404);
         }
-
-        // Actualizar comentario
-        $comentario->update([
-            'contenido' => $request->contenido,
-        ]);
-
-        return response()->json($comentario);
     }
 
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        // Buscar el comentario por el id
         $comentario = Comentario::find($id);
-
-        if (!$comentario) {
-            return response()->json(['message' => 'Comentario no encontrado'], 404);
+        if ($comentario) {
+            $comentario->delete();
+            return response()->json(['message' => 'Comentario eliminado']);
+        } else {
+            return response()->json(['error' => 'Comentario no encontrado'], 404);
         }
-
-        // Eliminar comentario
-        $comentario->delete();
-
-        return response()->json(['message' => 'Comentario eliminado exitosamente']);
     }
 }

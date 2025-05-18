@@ -4,22 +4,25 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticuloController;
 use App\Http\Controllers\ComentarioController;
 
-
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Rutas para los artículos
-Route::get('articulos', [ArticuloController::class, 'index']); // 1. Ver todos los artículos (GET)
-Route::get('articulos/{id}', [ArticuloController::class, 'show']); // 2. Ver un artículo específico (GET)
-Route::post('articulos', [ArticuloController::class, 'store']); // 3. Crear un nuevo artículo (POST)
-Route::put('articulos/{id}', [ArticuloController::class, 'update']); // 4. Editar un artículo existente (PUT)
-Route::delete('articulos/{id}', [ArticuloController::class, 'destroy']); // 5. Borrar un artículo (DELETE)
+/* Rutas para Artículos */
+Route::controller(ArticuloController::class)->group(function () {
+    Route::get('articulos', 'index');           // Ver todos los artículos (GET)
+    Route::get('articulos/{id}', 'show');         // Ver un artículo específico (GET)
+    Route::post('articulos', 'store');            // Crear un nuevo artículo (POST)
+    Route::put('articulos/{id}', 'update');         // Editar un artículo existente (PUT)
+    Route::delete('articulos/{id}', 'destroy');     // Borrar un artículo (DELETE)
+});
 
-// Rutas para los comentarios
-Route::get('comentarios', [ComentarioController::class, 'index']); // 6. Ver todos los comentarios (GET)
-Route::get('comentarios/{id}', [ComentarioController::class, 'show']); // 7. Ver un comentario específico (GET)
-Route::get('articulos/{articleId}/comentarios', [ComentarioController::class, 'articleComments']); // 8. Ver todos los comentarios de un artículo específico (GET)
-Route::post('comentarios', [ComentarioController::class, 'store']); // 9. Agregar un nuevo comentario (POST)
-Route::put('comentarios/{id}', [ComentarioController::class, 'update']); // 10. Editar un comentario existente (PUT)
-Route::delete('comentarios/{id}', [ComentarioController::class, 'destroy']); // 11. Borrar un comentario (DELETE)
+/* Rutas para Comentarios */
+Route::controller(ComentarioController::class)->group(function () {
+    Route::get('comentarios', 'index');                                 // Ver todos los comentarios (GET)
+    Route::get('comentarios/{id}', 'show');                               // Ver un comentario específico (GET)
+    Route::get('articulos/{articleId}/comentarios', 'comentariosArticulo'); // Ver todos los comentarios de un artículo específico (GET)
+    Route::post('comentarios', 'store');                                  // Agregar un nuevo comentario (POST)
+    Route::put('comentarios/{id}', 'update');                             // Editar un comentario existente (PUT)
+    Route::delete('comentarios/{id}', 'destroy');                         // Borrar un comentario (DELETE)
+});
